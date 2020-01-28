@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"runtime"
+	"strings"
 )
 
 type fieldKey string
@@ -54,6 +55,9 @@ type JSONFormatter struct {
 
 	// PrettyPrint will indent all json logs
 	PrettyPrint bool
+
+	// EscapeHTML specifies whether problematic HTML characters
+	EscapeHTML bool
 }
 
 // Format renders a single log entry
@@ -90,7 +94,7 @@ func (f *JSONFormatter) Format(entry *Entry) ([]byte, error) {
 		data[f.FieldMap.resolve(FieldKeyTime)] = entry.Time.Format(timestampFormat)
 	}
 	data[f.FieldMap.resolve(FieldKeyMsg)] = entry.Message
-	data[f.FieldMap.resolve(FieldKeyLevel)] = entry.Level.String()
+	data[f.FieldMap.resolve(FieldKeyLevel)] = strings.ToUpper(entry.Level.String())
 	if entry.HasCaller() {
 		funcVal := entry.Caller.Function
 		fileVal := fmt.Sprintf("%s:%d", entry.Caller.File, entry.Caller.Line)
@@ -117,6 +121,10 @@ func (f *JSONFormatter) Format(entry *Entry) ([]byte, error) {
 	if f.PrettyPrint {
 		encoder.SetIndent("", "  ")
 	}
+
+	// EscapeHTML specifies whether problematic HTML characters
+	encoder.SetEscapeHTML(f.EscapeHTML)
+
 	if err := encoder.Encode(data); err != nil {
 		return nil, fmt.Errorf("failed to marshal fields to JSON, %v", err)
 	}
