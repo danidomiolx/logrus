@@ -9,4 +9,3 @@ require (
 )
 
 go 1.13
-gs
