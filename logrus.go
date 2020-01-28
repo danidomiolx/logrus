@@ -30,7 +30,7 @@ func ParseLevel(lvl string) (Level, error) {
 		return FatalLevel, nil
 	case "error":
 		return ErrorLevel, nil
-	case "warn", "warning":
+	case "warn":
 		return WarnLevel, nil
 	case "info":
 		return InfoLevel, nil
@@ -65,7 +65,7 @@ func (level Level) MarshalText() ([]byte, error) {
 	case InfoLevel:
 		return []byte("info"), nil
 	case WarnLevel:
-		return []byte("warning"), nil
+		return []byte("warn"), nil
 	case ErrorLevel:
 		return []byte("error"), nil
 	case FatalLevel:

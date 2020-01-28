@@ -468,7 +468,7 @@ func TestConvertLevelToString(t *testing.T) {
 	assert.Equal(t, "trace", TraceLevel.String())
 	assert.Equal(t, "debug", DebugLevel.String())
 	assert.Equal(t, "info", InfoLevel.String())
-	assert.Equal(t, "warning", WarnLevel.String())
+	assert.Equal(t, "warn", WarnLevel.String())
 	assert.Equal(t, "error", ErrorLevel.String())
 	assert.Equal(t, "fatal", FatalLevel.String())
 	assert.Equal(t, "panic", PanicLevel.String())
@@ -507,7 +507,7 @@ func TestParseLevel(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, WarnLevel, l)
 
-	l, err = ParseLevel("warning")
+	l, err = ParseLevel("warn")
 	assert.Nil(t, err)
 	assert.Equal(t, WarnLevel, l)
 
