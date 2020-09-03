@@ -1,7 +1,7 @@
 version: "{build}"
 platform: x64
-clone_folder: c:\gopath\src\github.com\sirupsen\logrus
-environment:
+clone_folder: c:\gopath\src\github.com\rodkranz\logrus
+environment:  
   GOPATH: c:\gopath
 branches:
   only:

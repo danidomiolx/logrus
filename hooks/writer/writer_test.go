@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"testing"
 
-	log "github.com/sirupsen/logrus"
+	log "github.com/rodkranz/logrus"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -33,6 +33,6 @@ func TestDifferentLevelsGoToDifferentWriters(t *testing.T) {
 	log.Warn("send to a")
 	log.Info("send to b")
 
-	assert.Equal(t, a.String(), "level=warning msg=\"send to a\"\n")
+	assert.Equal(t, a.String(), "level=warn msg=\"send to a\"\n")
 	assert.Equal(t, b.String(), "level=info msg=\"send to b\"\n")
 }

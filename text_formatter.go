@@ -249,7 +249,7 @@ func (f *TextFormatter) printColored(b *bytes.Buffer, entry *Entry, keys []strin
 		formatString := "%-" + strconv.Itoa(f.levelTextMaxLength) + "s"
 		// Formats the level text by appending spaces up to the max length, for example:
 		// 	- "INFO   "
-		//	- "WARNING"
+		//	- "WARN   "
 		levelText = fmt.Sprintf(formatString, levelText)
 	}
 
