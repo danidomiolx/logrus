@@ -59,6 +59,7 @@ func TestQuoting(t *testing.T) {
 	checkQuoting(false, "foo@bar")
 	checkQuoting(false, "foobar^")
 	checkQuoting(false, "+/-_^@f.oobar")
+	checkQuoting(true, "foo\n\rbar")
 	checkQuoting(true, "foobar$")
 	checkQuoting(true, "&foobar")
 	checkQuoting(true, "x y")
@@ -70,13 +71,30 @@ func TestQuoting(t *testing.T) {
 	tf.QuoteEmptyFields = true
 	checkQuoting(true, "")
 	checkQuoting(false, "abcd")
+	checkQuoting(true, "foo\n\rbar")
 	checkQuoting(true, errors.New("invalid argument"))
 
 	// Test forcing quotes.
 	tf.ForceQuote = true
 	checkQuoting(true, "")
 	checkQuoting(true, "abcd")
+	checkQuoting(true, "foo\n\rbar")
 	checkQuoting(true, errors.New("invalid argument"))
+
+	// Test forcing quotes when also disabling them.
+	tf.DisableQuote = true
+	checkQuoting(true, "")
+	checkQuoting(true, "abcd")
+	checkQuoting(true, "foo\n\rbar")
+	checkQuoting(true, errors.New("invalid argument"))
+
+	// Test disabling quotes
+	tf.ForceQuote = false
+	tf.QuoteEmptyFields = false
+	checkQuoting(false, "")
+	checkQuoting(false, "abcd")
+	checkQuoting(false, "foo\n\rbar")
+	checkQuoting(false, errors.New("invalid argument"))
 }
 
 func TestEscaping(t *testing.T) {
@@ -206,9 +224,9 @@ func TestPadLevelText(t *testing.T) {
 			paddedLevelText: "ERROR  ", // 2 extra spaces
 		},
 		{
-			name:  "WarnLevel",
-			level: WarnLevel,
-			// WARNING is already the max length, so we don't need to assert a paddedLevelText
+			name:            "WarnLevel",
+			level:           WarnLevel,
+			paddedLevelText: "WARN   ", // 3 extra spaces
 		},
 		{
 			name:            "DebugLevel",
@@ -261,7 +279,7 @@ func TestPadLevelText(t *testing.T) {
 			}
 
 			// Assertion: the level text should be in its padded form now
-			if val.paddedLevelText != "" && !strings.Contains(logLineWithPadding, val.paddedLevelText) {
+			if val.paddedLevelText != "" && strings.Contains(logLineWithPadding, val.paddedLevelText) {
 				t.Errorf("log line %q should contain the padded level text %q when padding is enabled", logLineWithPadding, val.paddedLevelText)
 			}
 
@@ -330,7 +348,7 @@ func TestTextFormatterFieldMap(t *testing.T) {
 
 	assert.Equal(t,
 		`timeywimey="1981-02-24T04:28:03Z" `+
-			`somelevel=warning `+
+			`somelevel=warn `+
 			`message="oh hi" `+
 			`field1=f1 `+
 			`fields.message=messagefield `+

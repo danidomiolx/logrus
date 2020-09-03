@@ -129,7 +129,7 @@ func TestWarn(t *testing.T) {
 		log.Warn("test")
 	}, func(fields Fields) {
 		assert.Equal(t, "test", fields["msg"])
-		assert.Equal(t, "WARNING", fields["level"])
+		assert.Equal(t, "WARN", fields["level"])
 	})
 }
 
@@ -138,7 +138,7 @@ func TestLog(t *testing.T) {
 		log.Log(WarnLevel, "test")
 	}, func(fields Fields) {
 		assert.Equal(t, "test", fields["msg"])
-		assert.Equal(t, "WARNING", fields["level"])
+		assert.Equal(t, "WARN", fields["level"])
 	})
 }
 
@@ -511,7 +511,7 @@ func TestParseLevel(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, WarnLevel, l)
 
-	l, err = ParseLevel("WARNING")
+	l, err = ParseLevel("WARN")
 	assert.Nil(t, err)
 	assert.Equal(t, WarnLevel, l)
 
@@ -666,7 +666,7 @@ func TestEntryWriter(t *testing.T) {
 	err = json.Unmarshal(bs, &fields)
 	assert.Nil(t, err)
 	assert.Equal(t, fields["foo"], "bar")
-	assert.Equal(t, fields["level"], "WARNING")
+	assert.Equal(t, fields["level"], "WARN")
 }
 
 func TestLogLevelEnabled(t *testing.T) {

@@ -3,12 +3,32 @@
 Logrus is a structured logger for Go (golang), completely API compatible with
 the standard library logger.
 
+**Logrus is in maintenance-mode.** We will not be introducing new features. It's
+simply too hard to do in a way that won't break many people's projects, which is
+the last thing you want from your Logging library (again...).
+
+This does not mean Logrus is dead. Logrus will continue to be maintained for
+security, (backwards compatible) bug fixes, and performance (where we are
+limited by the interface). 
+
+I believe Logrus' biggest contribution is to have played a part in today's
+widespread use of structured logging in Golang. There doesn't seem to be a
+reason to do a major, breaking iteration into Logrus V2, since the fantastic Go
+community has built those independently. Many fantastic alternatives have sprung
+up. Logrus would look like those, had it been re-designed with what we know
+about structured logging in Go today. Check out, for example,
+[Zerolog][zerolog], [Zap][zap], and [Apex][apex].
+
+[zerolog]: https://github.com/rs/zerolog
+[zap]: https://github.com/uber-go/zap
+[apex]: https://github.com/apex/log
+
 **Seeing weird case-sensitive problems?** It's in the past been possible to
 import Logrus as both upper- and lower-case. Due to the Go package environment,
 this caused issues in the community and we needed a standard. Some environments
 experienced problems with the upper-case variant, so the lower-case was decided.
 Everything using `logrus` will need to use the lower-case:
-`github.com/sirupsen/logrus`. Any package that isn't, should be changed.
+`github.com/rodkranz/logrus`. Any package that isn't, should be changed.
 
 To fix Glide, see [these
 comments](https://github.com/sirupsen/logrus/issues/553#issuecomment-306591437).
@@ -27,7 +47,7 @@ or Splunk:
 {"animal":"walrus","level":"info","msg":"A group of walrus emerges from the
 ocean","size":10,"time":"2014-03-10 19:57:38.562264131 -0400 EDT"}
 
-{"level":"warning","msg":"The group's number increased tremendously!",
+{"level":"warn","msg":"The group's number increased tremendously!",
 "number":122,"omg":true,"time":"2014-03-10 19:57:38.562471297 -0400 EDT"}
 
 {"animal":"walrus","level":"info","msg":"A giant walrus appears!",
@@ -47,7 +67,7 @@ attached, the output is compatible with the
 ```text
 time="2015-03-26T01:27:38-04:00" level=debug msg="Started observing beach" animal=walrus number=8
 time="2015-03-26T01:27:38-04:00" level=info msg="A group of walrus emerges from the ocean" animal=walrus size=10
-time="2015-03-26T01:27:38-04:00" level=warning msg="The group's number increased tremendously!" number=122 omg=true
+time="2015-03-26T01:27:38-04:00" level=warn msg="The group's number increased tremendously!" number=122 omg=true
 time="2015-03-26T01:27:38-04:00" level=debug msg="Temperature changes" temperature=-4
 time="2015-03-26T01:27:38-04:00" level=panic msg="It's over 9000!" animal=orca size=9009
 time="2015-03-26T01:27:38-04:00" level=fatal msg="The ice breaks!" err=&{0x2082280c0 map[animal:orca size:9009] 2015-03-26 01:27:38.441574009 -0400 EDT panic It's over 9000!} number=100 omg=true
@@ -70,12 +90,12 @@ log.SetReportCaller(true)
 This adds the caller as 'method' like so:
 
 ```json
-{"animal":"penguin","level":"fatal","method":"github.com/sirupsen/arcticcreatures.migrate","msg":"a penguin swims by",
+{"animal":"penguin","level":"fatal","method":"github.com/rodkranz/arcticcreatures.migrate","msg":"a penguin swims by",
 "time":"2014-03-10 19:57:38.562543129 -0400 EDT"}
 ```
 
 ```text
-time="2015-03-26T01:27:38-04:00" level=fatal method=github.com/sirupsen/arcticcreatures.migrate msg="a penguin swims by" animal=penguin
+time="2015-03-26T01:27:38-04:00" level=fatal method=github.com/rodkranz/arcticcreatures.migrate msg="a penguin swims by" animal=penguin
 ```
 Note that this does add measurable overhead - the cost will depend on the version of Go, but is
 between 20 and 40% in recent tests with 1.6 and 1.7.  You can validate this in your
@@ -89,7 +109,7 @@ go test -bench=.*CallerTracing
 
 The organization's name was changed to lower-case--and this will not be changed
 back. If you are getting import conflicts due to case sensitivity, please use
-the lower-case import: `github.com/sirupsen/logrus`.
+the lower-case import: `github.com/rodkranz/logrus`.
 
 #### Example
 
@@ -99,7 +119,7 @@ The simplest way to use Logrus is simply the package-level exported logger:
 package main
 
 import (
-  log "github.com/sirupsen/logrus"
+  log "github.com/rodkranz/logrus"
 )
 
 func main() {
@@ -110,7 +130,7 @@ func main() {
 ```
 
 Note that it's completely api-compatible with the stdlib logger, so you can
-replace your `log` imports everywhere with `log "github.com/sirupsen/logrus"`
+replace your `log` imports everywhere with `log "github.com/rodkranz/logrus"`
 and you'll now have the flexibility of Logrus. You can customize it all you
 want:
 
@@ -119,7 +139,7 @@ package main
 
 import (
   "os"
-  log "github.com/sirupsen/logrus"
+  log "github.com/rodkranz/logrus"
 )
 
 func init() {
@@ -130,7 +150,7 @@ func init() {
   // Can be any io.Writer, see below for File example
   log.SetOutput(os.Stdout)
 
-  // Only log the warning severity or above.
+  // Only log the warn severity or above.
   log.SetLevel(log.WarnLevel)
 }
 
@@ -170,7 +190,7 @@ package main
 
 import (
   "os"
-  "github.com/sirupsen/logrus"
+  "github.com/rodkranz/logrus"
 )
 
 // Create a new instance of the logger. You can have any number of instances.
@@ -245,9 +265,9 @@ Logrus comes with [built-in hooks](hooks/). Add those, or your custom hook, in
 
 ```go
 import (
-  log "github.com/sirupsen/logrus"
+  log "github.com/rodkranz/logrus"
   "gopkg.in/gemnasium/logrus-airbrake-hook.v2" // the package is named "airbrake"
-  logrus_syslog "github.com/sirupsen/logrus/hooks/syslog"
+  logrus_syslog "github.com/rodkranz/logrus/hooks/syslog"
   "log/syslog"
 )
 
@@ -318,7 +338,7 @@ could do:
 
 ```go
 import (
-  log "github.com/sirupsen/logrus"
+  log "github.com/rodkranz/logrus"
 )
 
 init() {
@@ -350,9 +370,9 @@ The built-in logging formatters are:
   * When colors are enabled, levels are truncated to 4 characters by default. To disable
     truncation set the `DisableLevelTruncation` field to `true`.
   * When outputting to a TTY, it's often helpful to visually scan down a column where all the levels are the same width. Setting the `PadLevelText` field to `true` enables this behavior, by adding padding to the level text.
-  * All options are listed in the [generated docs](https://godoc.org/github.com/sirupsen/logrus#TextFormatter).
+  * All options are listed in the [generated docs](https://godoc.org/github.com/rodkranz/logrus#TextFormatter).
 * `logrus.JSONFormatter`. Logs fields as JSON.
-  * All options are listed in the [generated docs](https://godoc.org/github.com/sirupsen/logrus#JSONFormatter).
+  * All options are listed in the [generated docs](https://godoc.org/github.com/rodkranz/logrus#JSONFormatter).
 
 Third party logging formatters:
 
@@ -360,9 +380,10 @@ Third party logging formatters:
 * [`GELF`](https://github.com/fabienm/go-logrus-formatters). Formats entries so they comply to Graylog's [GELF 1.1 specification](http://docs.graylog.org/en/2.4/pages/gelf.html).
 * [`logstash`](https://github.com/bshuster-repo/logrus-logstash-hook). Logs fields as [Logstash](http://logstash.net) Events.
 * [`prefixed`](https://github.com/x-cray/logrus-prefixed-formatter). Displays log entry source along with alternative layout.
-* [`zalgo`](https://github.com/aybabtme/logzalgo). Invoking the P͉̫o̳̼̊w̖͈̰͎e̬͔̭͂r͚̼̹̲ ̫͓͉̳͈ō̠͕͖̚f̝͍̠ ͕̲̞͖͑Z̖̫̤̫ͪa͉̬͈̗l͖͎g̳̥o̰̥̅!̣͔̲̻͊̄ ̙̘̦̹̦.
+* [`zalgo`](https://github.com/aybabtme/logzalgo). Invoking the Power of Zalgo.
 * [`nested-logrus-formatter`](https://github.com/antonfisher/nested-logrus-formatter). Converts logrus fields to a nested structure.
 * [`powerful-logrus-formatter`](https://github.com/zput/zxcTool). get fileName, log's line number and the latest function's name when print log; Sava log to files.
+* [`caption-json-formatter`](https://github.com/nolleh/caption_json_formatter). logrus's message json formatter with human-readable caption added.
 
 You can define your formatter by implementing the `Formatter` interface,
 requiring a `Format` method. `Format` takes an `*Entry`. `entry.Data` is a
@@ -439,8 +460,8 @@ Logrus has a built in facility for asserting the presence of log messages. This 
 
 ```go
 import(
-  "github.com/sirupsen/logrus"
-  "github.com/sirupsen/logrus/hooks/test"
+  "github.com/rodkranz/logrus"
+  "github.com/rodkranz/logrus/hooks/test"
   "github.com/stretchr/testify/assert"
   "testing"
 )
