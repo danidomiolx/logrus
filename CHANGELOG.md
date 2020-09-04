@@ -1,3 +1,9 @@
+# 1.6.1 rodkranz
+Fixes:
+  * rebase with Master github.com/sirupsen/logrus
+  * remove of EscapeHTML property
+  * Fix tests
+
 # 1.6.0
 Fixes:
   * end of line cleanup
@@ -20,6 +26,11 @@ Feature:
   * add an hooks/writer sub-package whose goal is to split output on different stream depending on the trace level
   * add a `DisableHTMLEscape` option in the `JSONFormatter`
   * add `ForceQuote` and `PadLevelText` options in the `TextFormatter`
+
+# 1.4.5 rodkranz
+  * Fix tests
+  * Upper case log levels
+  * Warning -> Warn
 
 # 1.4.2
   * Fixes build break for plan9, nacl, solaris
